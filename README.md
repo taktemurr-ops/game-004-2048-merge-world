@@ -24,3 +24,8 @@ Run `flutter pub get`, `flutter test`, `flutter run` in a Flutter SDK environmen
 - Android and iOS release builds and store verification
 
 This is an original prototype, NOT a finished production game.
+
+## Recent iteration
+- Undo the previous successful move; restores the exact prior board, score and move count.
+- Up to 20 undo snapshots, no history generated for no-op moves.
+- Added unit tests for undo restoration.
