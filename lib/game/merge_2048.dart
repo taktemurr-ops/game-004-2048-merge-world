@@ -10,6 +10,36 @@ class Merge2048 {
   int moves = 0;
   final List<({List<List<int>> tiles, int score, int moves})> _history = [];
 
+  /// JSON-compatible snapshot for a local persistence adapter.
+  Map<String, Object> toSnapshot() => {
+    'version': 1,
+    'board': board.map((row) => List<int>.from(row)).toList(),
+    'score': score,
+    'moves': moves,
+  };
+
+  /// Reject corrupted or unsupported saves instead of loading invalid state.
+  factory Merge2048.fromSnapshot(Map<String, dynamic> snapshot,
+      {Random? random}) {
+    if (snapshot['version'] != 1 ||
+        snapshot['score'] is! int || snapshot['score'] < 0 ||
+        snapshot['moves'] is! int || snapshot['moves'] < 0) {
+      throw const FormatException('Invalid 2048 save metadata.');
+    }
+    final raw = snapshot['board'];
+    if (raw is! List || (raw.length != 4 && raw.length != 5) ||
+        raw.any((row) => row is! List ||
+            row.length != raw.length ||
+            row.any((tile) => tile is! int))) {
+      throw const FormatException('Invalid 2048 saved board.');
+    }
+    final tiles = raw.map((row) => List<int>.from(row as List)).toList();
+    final game = Merge2048.fromBoard(tiles, random: random);
+    game.score = snapshot['score'] as int;
+    game.moves = snapshot['moves'] as int;
+    return game;
+  }
+
   bool get canUndo => _history.isNotEmpty;
 
   bool undo() {
