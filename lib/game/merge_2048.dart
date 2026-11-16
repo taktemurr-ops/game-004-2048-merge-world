@@ -141,6 +141,51 @@ class Merge2048 {
     return changed;
   }
 
+  /// Returns legal swipe directions without mutating the board or score.
+  /// Useful for accessible hints and automated move validation.
+  List<SlideDirection> get availableMoves {
+    final legal = <SlideDirection>[];
+    for (final direction in SlideDirection.values) {
+      var possible = false;
+      for (var index = 0; index < size && !possible; index++) {
+        final line = <int>[];
+        for (var offset = 0; offset < size; offset++) {
+          switch (direction) {
+            case SlideDirection.left:
+              line.add(board[index][offset]);
+            case SlideDirection.right:
+              line.add(board[index][size - 1 - offset]);
+            case SlideDirection.up:
+              line.add(board[offset][index]);
+            case SlideDirection.down:
+              line.add(board[size - 1 - offset][index]);
+          }
+        }
+        final compact = line.where((value) => value != 0).toList();
+        final merged = <int>[];
+        for (var i = 0; i < compact.length; i++) {
+          if (i + 1 < compact.length && compact[i] == compact[i + 1]) {
+            merged.add(compact[i] * 2);
+            i++;
+          } else {
+            merged.add(compact[i]);
+          }
+        }
+        while (merged.length < size) {
+          merged.add(0);
+        }
+        for (var i = 0; i < size; i++) {
+          if (merged[i] != line[i]) {
+            possible = true;
+            break;
+          }
+        }
+      }
+      if (possible) legal.add(direction);
+    }
+    return legal;
+  }
+
   bool get won => board.expand((r) => r).any((n) => n >= 2048);
 
   bool get gameOver {
