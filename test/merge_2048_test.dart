@@ -91,4 +91,25 @@ void main() {
     expect(game.slide(SlideDirection.left, addTile:false), false);
     expect(game.canUndo, false);
   });
+  test('available moves are legal and do not change game state', () {
+    final game = Merge2048.fromBoard([
+      [2, 4, 8, 16], [0, 0, 0, 0],
+      [0, 0, 0, 0], [0, 0, 0, 0],
+    ]);
+    final before = game.toSnapshot();
+    expect(game.availableMoves, containsAll([
+      SlideDirection.right, SlideDirection.down,
+    ]));
+    expect(game.availableMoves, isNot(contains(SlideDirection.left)));
+    expect(game.availableMoves, isNot(contains(SlideDirection.up)));
+    expect(game.toSnapshot(), before);
+    expect(game.canUndo, false);
+  });
+  test('game-over board has no legal move hints', () {
+    final game = Merge2048.fromBoard([
+      [2, 4, 2, 4], [4, 2, 4, 2],
+      [2, 4, 2, 4], [4, 2, 4, 2],
+    ]);
+    expect(game.availableMoves, isEmpty);
+  });
 }
