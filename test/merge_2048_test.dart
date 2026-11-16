@@ -30,4 +30,24 @@ void main() {
     ]);
     expect(game.gameOver, true);
   });
+  test('undo restores board, score and moves after a merge', () {
+    final game = Merge2048.fromBoard([
+      [2,2,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]
+    ]);
+    expect(game.slide(SlideDirection.left, addTile:false), true);
+    expect(game.canUndo, true);
+    expect(game.score, 4);
+    expect(game.undo(), true);
+    expect(game.board[0], [2,2,0,0]);
+    expect(game.score, 0);
+    expect(game.moves, 0);
+    expect(game.canUndo, false);
+  });
+  test('no-op does not generate an undo snapshot', () {
+    final game = Merge2048.fromBoard([
+      [2,4,8,16],[0,0,0,0],[0,0,0,0],[0,0,0,0]
+    ]);
+    expect(game.slide(SlideDirection.left, addTile:false), false);
+    expect(game.canUndo, false);
+  });
 }
