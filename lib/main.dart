@@ -95,6 +95,12 @@ class _MergeScreenState extends State<MergeScreen> {
             : game.won ? '2048 reached! Keep playing.' : 'Swipe to merge matching numbers.',
             textAlign: TextAlign.center),
           const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: game.canUndo ? () => setState(game.undo) : null,
+            icon: const Icon(Icons.undo),
+            label: const Text('Undo'),
+          ),
+          const SizedBox(height: 8),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
             IconButton.filledTonal(onPressed: () => move(SlideDirection.left), icon: const Icon(Icons.arrow_back)),
             IconButton.filledTonal(onPressed: () => move(SlideDirection.up), icon: const Icon(Icons.arrow_upward)),
