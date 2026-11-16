@@ -71,7 +71,7 @@ class Merge2048 {
         result.add(nonzero[i]);
       }
     }
-    while (result.length < 4) result.add(0);
+    while (result.length < 4) { result.add(0); }
     return result;
   }
 
