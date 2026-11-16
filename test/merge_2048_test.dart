@@ -2,6 +2,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_004_2048_merge_world/game/merge_2048.dart';
 
 void main() {
+  test('5x5 mode supports merges and undo', () {
+    final game = Merge2048.fromBoard([
+      [2, 2, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+    expect(game.size, 5);
+    expect(game.slide(SlideDirection.left, addTile: false), isTrue);
+    expect(game.board[0], [4, 0, 0, 0, 0]);
+    expect(game.undo(), isTrue);
+    expect(game.board[0], [2, 2, 0, 0, 0]);
+  });
+  test('new 5x5 game starts with two tiles', () {
+    final game = Merge2048(size: 5);
+    expect(game.board.length, 5);
+    expect(game.board.expand((row) => row).where((v) => v != 0).length, 2);
+  });
   test('two pairs merge once per move', () {
     final game = Merge2048.fromBoard([
       [2,2,2,2],[0,0,0,0],[0,0,0,0],[0,0,0,0]
