@@ -28,6 +28,8 @@ class _MergeScreenState extends State<MergeScreen> {
   Merge2048 game = Merge2048();
   Offset? gestureStart;
 
+  void newGame(int size) => setState(() => game = Merge2048(size: size));
+
   void move(SlideDirection direction) {
     if (game.gameOver) return;
     setState(() => game.slide(direction));
@@ -68,10 +70,10 @@ class _MergeScreenState extends State<MergeScreen> {
       child: AspectRatio(
         aspectRatio: 1,
         child: Column(
-          children: List.generate(4, (r) {
+          children: List.generate(game.size, (r) {
             return Expanded(
               child: Row(
-                children: List.generate(4, (c) {
+                children: List.generate(game.size, (c) {
                   final value = game.board[r][c];
                   return Expanded(
                     child: Padding(
@@ -85,7 +87,7 @@ class _MergeScreenState extends State<MergeScreen> {
                           child: Text(
                             value == 0 ? '' : '$value',
                             style: TextStyle(
-                              fontSize: 25,
+                              fontSize: game.size == 5 ? 19 : 25,
                               fontWeight: FontWeight.bold,
                               color: value <= 8 ? Colors.black87 : Colors.white,
                             ),
@@ -111,7 +113,7 @@ class _MergeScreenState extends State<MergeScreen> {
         actions: [
           IconButton(
             tooltip: 'New game',
-            onPressed: () => setState(() => game = Merge2048()),
+            onPressed: () => newGame(game.size),
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -129,8 +131,17 @@ class _MergeScreenState extends State<MergeScreen> {
                     'Score: ${game.score}    Moves: ${game.moves}',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 20),
-                  buildBoard(),
+                  const SizedBox(height: 8),
+                  SegmentedButton<int>(
+                    segments: const [
+                      ButtonSegment(value: 4, label: Text('4×4')),
+                      ButtonSegment(value: 5, label: Text('5×5')),
+                    ],
+                    selected: {game.size},
+                    onSelectionChanged: (sizes) => newGame(sizes.first),
+                  ),
+                  const SizedBox(height: 12),
+                  Flexible(child: buildBoard()),
                   const SizedBox(height: 16),
                   Text(
                     game.gameOver ? 'Game over. Start a new round.'
