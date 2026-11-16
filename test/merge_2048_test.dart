@@ -2,6 +2,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:game_004_2048_merge_world/game/merge_2048.dart';
 
 void main() {
+  test('snapshot restores tiles, score and moves without spawning', () {
+    final game = Merge2048.fromBoard([
+      [2, 2, 0, 0], [0, 0, 0, 0],
+      [0, 0, 0, 0], [0, 0, 0, 0],
+    ]);
+    game.slide(SlideDirection.left, addTile: false);
+    final restored = Merge2048.fromSnapshot(game.toSnapshot());
+    expect(restored.board, game.board);
+    expect(restored.score, 4);
+    expect(restored.moves, 1);
+    expect(restored.canUndo, false);
+  });
+  test('snapshot rejects invalid board and negative counters', () {
+    expect(() => Merge2048.fromSnapshot({
+      'version': 1, 'board': [[2]], 'score': 0, 'moves': 0,
+    }), throwsFormatException);
+    expect(() => Merge2048.fromSnapshot({
+      'version': 1,
+      'board': List.generate(4, (_) => [0, 0, 0, 0]),
+      'score': -1, 'moves': 0,
+    }), throwsFormatException);
+  });
   test('5x5 mode supports merges and undo', () {
     final game = Merge2048.fromBoard([
       [2, 2, 0, 0, 0],
