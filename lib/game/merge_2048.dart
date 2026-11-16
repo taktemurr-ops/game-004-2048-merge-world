@@ -7,6 +7,22 @@ class Merge2048 {
   final List<List<int>> board = List.generate(4, (_) => List.filled(4, 0));
   int score = 0;
   int moves = 0;
+  final List<({List<List<int>> tiles, int score, int moves})> _history = [];
+
+  bool get canUndo => _history.isNotEmpty;
+
+  bool undo() {
+    if (_history.isEmpty) return false;
+    final previous = _history.removeLast();
+    for (var r = 0; r < 4; r++) {
+      for (var c = 0; c < 4; c++) {
+        board[r][c] = previous.tiles[r][c];
+      }
+    }
+    score = previous.score;
+    moves = previous.moves;
+    return true;
+  }
 
   Merge2048({Random? random}) : random = random ?? Random() {
     spawn();
@@ -60,6 +76,8 @@ class Merge2048 {
   }
 
   bool slide(SlideDirection direction, {bool addTile = true}) {
+    final before = (tiles: board.map((r) => List<int>.from(r)).toList(),
+        score: score, moves: moves);
     var changed = false;
     for (var index = 0; index < 4; index++) {
       final coords = <(int, int)>[];
@@ -79,6 +97,8 @@ class Merge2048 {
       }
     }
     if (changed) {
+      _history.add(before);
+      if (_history.length > 20) _history.removeAt(0);
       moves++;
       if (addTile) spawn();
     }
