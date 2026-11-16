@@ -4,7 +4,8 @@ enum SlideDirection { left, right, up, down }
 
 class Merge2048 {
   final Random random;
-  final List<List<int>> board = List.generate(4, (_) => List.filled(4, 0));
+  final int size;
+  final List<List<int>> board;
   int score = 0;
   int moves = 0;
   final List<({List<List<int>> tiles, int score, int moves})> _history = [];
@@ -14,8 +15,8 @@ class Merge2048 {
   bool undo() {
     if (_history.isEmpty) return false;
     final previous = _history.removeLast();
-    for (var r = 0; r < 4; r++) {
-      for (var c = 0; c < 4; c++) {
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
         board[r][c] = previous.tiles[r][c];
       }
     }
@@ -24,18 +25,23 @@ class Merge2048 {
     return true;
   }
 
-  Merge2048({Random? random}) : random = random ?? Random() {
+  Merge2048({Random? random, this.size = 4})
+      : assert(size == 4 || size == 5),
+        random = random ?? Random(),
+        board = List.generate(size, (_) => List.filled(size, 0)) {
     spawn();
     spawn();
   }
 
   Merge2048.fromBoard(List<List<int>> initial, {Random? random})
-      : random = random ?? Random() {
-    if (initial.length != 4 || initial.any((r) => r.length != 4)) {
-      throw ArgumentError('The board must be 4x4.');
+      : size = initial.length,
+        random = random ?? Random(),
+        board = List.generate(initial.length, (_) => List.filled(initial.length, 0)) {
+    if ((size != 4 && size != 5) || initial.any((r) => r.length != size)) {
+      throw ArgumentError('The board must be 4x4 or 5x5.');
     }
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 4; j++) {
+    for (var i = 0; i < size; i++) {
+      for (var j = 0; j < size; j++) {
         final value = initial[i][j];
         if (value < 0 || (value != 0 && (value & (value - 1)) != 0)) {
           throw ArgumentError('Tiles must be 0 or positive powers of two.');
@@ -47,8 +53,8 @@ class Merge2048 {
 
   bool spawn() {
     final empty = <(int, int)>[];
-    for (var r = 0; r < 4; r++) {
-      for (var c = 0; c < 4; c++) {
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
         if (board[r][c] == 0) empty.add((r, c));
       }
     }
@@ -71,7 +77,7 @@ class Merge2048 {
         result.add(nonzero[i]);
       }
     }
-    while (result.length < 4) { result.add(0); }
+    while (result.length < size) { result.add(0); }
     return result;
   }
 
@@ -79,19 +85,19 @@ class Merge2048 {
     final before = (tiles: board.map((r) => List<int>.from(r)).toList(),
         score: score, moves: moves);
     var changed = false;
-    for (var index = 0; index < 4; index++) {
+    for (var index = 0; index < size; index++) {
       final coords = <(int, int)>[];
-      for (var offset = 0; offset < 4; offset++) {
+      for (var offset = 0; offset < size; offset++) {
         switch (direction) {
           case SlideDirection.left: coords.add((index, offset)); break;
-          case SlideDirection.right: coords.add((index, 3 - offset)); break;
+          case SlideDirection.right: coords.add((index, size - 1 - offset)); break;
           case SlideDirection.up: coords.add((offset, index)); break;
-          case SlideDirection.down: coords.add((3 - offset, index)); break;
+          case SlideDirection.down: coords.add((size - 1 - offset, index)); break;
         }
       }
       final old = coords.map((p) => board[p.$1][p.$2]).toList();
       final next = mergeLine(old);
-      for (var j = 0; j < 4; j++) {
+      for (var j = 0; j < size; j++) {
         if (old[j] != next[j]) changed = true;
         board[coords[j].$1][coords[j].$2] = next[j];
       }
@@ -108,11 +114,11 @@ class Merge2048 {
   bool get won => board.expand((r) => r).any((n) => n >= 2048);
 
   bool get gameOver {
-    for (var r = 0; r < 4; r++) {
-      for (var c = 0; c < 4; c++) {
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
         if (board[r][c] == 0) return false;
-        if (r < 3 && board[r][c] == board[r + 1][c]) return false;
-        if (c < 3 && board[r][c] == board[r][c + 1]) return false;
+        if (r < size - 1 && board[r][c] == board[r + 1][c]) return false;
+        if (c < size - 1 && board[r][c] == board[r][c + 1]) return false;
       }
     }
     return true;
