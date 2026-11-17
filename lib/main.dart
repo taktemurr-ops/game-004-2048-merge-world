@@ -27,12 +27,13 @@ class MergeScreen extends StatefulWidget {
 class _MergeScreenState extends State<MergeScreen> {
   Merge2048 game = Merge2048();
   Offset? gestureStart;
+  SlideDirection? hint;
 
-  void newGame(int size) => setState(() => game = Merge2048(size: size));
+  void newGame(int size) => setState(() { game = Merge2048(size: size); hint = null; });
 
   void move(SlideDirection direction) {
     if (game.gameOver) return;
-    setState(() => game.slide(direction));
+    setState(() { game.slide(direction); hint = null; });
   }
 
   Color tileColor(int n) {
@@ -157,6 +158,13 @@ class _MergeScreenState extends State<MergeScreen> {
                     icon: const Icon(Icons.undo),
                     label: const Text('Undo'),
                   ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: game.gameOver ? null : () => setState(() => hint = game.suggestedMove),
+                    icon: const Icon(Icons.lightbulb_outline),
+                    label: const Text('Free hint (no ad required)'),
+                  ),
+                  if (hint != null) Text('Try: ${hint!.name}'),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
