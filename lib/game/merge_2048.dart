@@ -186,6 +186,25 @@ class Merge2048 {
     return legal;
   }
 
+  /// Free, deterministic hint: favor the legal move with the highest immediate
+  /// merge score. Never mutates the live board or consumes a rewarded ad.
+  /// Returns null when no legal move exists.
+  SlideDirection? get suggestedMove {
+    SlideDirection? best;
+    var bestGain = -1;
+    for (final direction in availableMoves) {
+      final copy = Merge2048.fromBoard(
+        board.map((row) => List<int>.from(row)).toList(),
+      );
+      copy.slide(direction, addTile: false);
+      if (copy.score > bestGain) {
+        bestGain = copy.score;
+        best = direction;
+      }
+    }
+    return best;
+  }
+
   bool get won => board.expand((r) => r).any((n) => n >= 2048);
 
   bool get gameOver {
