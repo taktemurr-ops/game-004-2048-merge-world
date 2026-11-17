@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/monetization/verified_entitlement_store.dart';
+import 'package:game_004_2048_merge_world/monetization/verified_entitlement_store.dart';
 
 void main() {
   test('purchase callbacks do not unlock without store verification', () {

@@ -18,7 +18,7 @@ class EntitlementLedger {
         purchase.accountId != accountId ||
         purchase.productId.trim().isEmpty ||
         purchase.transactionId.trim().isEmpty ||
-        !_processed.add(purchase.transactionId)) return false;
+        !_processed.add(purchase.transactionId)) { return false; }
     _ownedProducts.add(purchase.productId);
     return true;
   }

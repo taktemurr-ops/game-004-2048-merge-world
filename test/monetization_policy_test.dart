@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/monetization/monetization_policy.dart';
+import 'package:game_004_2048_merge_world/monetization/monetization_policy.dart';
 
 void main() {
   test('unknown audience and missing consent prevent advertising', () {
@@ -18,10 +18,10 @@ void main() {
     final policy = MonetizationPolicy();
     policy.setConsent(true);
     policy.setAudience(Audience.general);
-    for (var i = 0; i < 3; i++) policy.recordCompletedRound();
+    for (var i = 0; i < 3; i++) { policy.recordCompletedRound(); }
     expect(policy.markInterstitialShown(), true);
     expect(policy.markInterstitialShown(), false);
-    for (var i = 0; i < 3; i++) policy.recordCompletedRound();
+    for (var i = 0; i < 3; i++) { policy.recordCompletedRound(); }
     expect(policy.mayShowInterstitial, true);
     policy.setVerifiedAdsRemoved(true);
     expect(policy.mayShowInterstitial, false);

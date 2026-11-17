@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/monetization/reward_grant_gate.dart';
+import 'package:game_004_2048_merge_world/monetization/reward_grant_gate.dart';
 
 void main() {
   test('unverified, duplicate and cancelled rewards are never granted', () {

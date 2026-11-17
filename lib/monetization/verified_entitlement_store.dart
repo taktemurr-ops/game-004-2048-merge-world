@@ -14,7 +14,7 @@ class VerifiedEntitlementStore {
 
   bool beginPurchase(String productId, PurchaseKind kind) {
     if (productId.trim().isEmpty ||
-        stateOf(productId) != PurchaseState.locked) return false;
+        stateOf(productId) != PurchaseState.locked) { return false; }
     _kinds[productId] = kind;
     _states[productId] = PurchaseState.pendingVerification;
     return true;
@@ -31,7 +31,7 @@ class VerifiedEntitlementStore {
   }) {
     if (!storeVerified || !productMatches || !belongsToAccount ||
         productId.trim().isEmpty || transactionId.trim().isEmpty ||
-        _processedTransactions.contains(transactionId)) return false;
+        _processedTransactions.contains(transactionId)) { return false; }
     _processedTransactions.add(transactionId);
     _states[productId] = PurchaseState.entitled;
     return true;

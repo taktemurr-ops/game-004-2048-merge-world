@@ -1,31 +1,26 @@
-# 2048 Merge World
+# 2048 Merge World — Game Studio 100 / Game 004
 
-Game Studio 100 | Android + iOS | Flutter | **prototype in progress**
+Flutter 3.3+ offline-first 2048 variant for Android and iOS, extending the
+existing `game-004-2048-merge-world` repository (not a new project).
 
-## Current implemented source
+## Implemented in source
+- Correct 2048 merge rules, scoring, one-merge-per-tile, legal moves and undo.
+- **Classic 4×4, Big Board 5×5 (4096 goal), daily, Zen, timed (180 seconds)**.
+- Swipe, accessible directional buttons and desktop keyboard arrows.
+- Hints (free, offline), responsive animated tiles and pause/resume flow.
+- Local save/resume, best score per mode, session stats and highest tile.
+- Turkish/English/Arabic strings, privacy screen, sound/vibration/contrast.
+- Clear local data; no accounts, analytics, ad network or payments enabled.
+- Engine, storage and widget test coverage; Android and iOS CI configuration.
 
-4×4 directional sliding, equal-tile merging, score tracking, tile spawning, game-over detection, swipe and arrow controls.
+```bash
+flutter create --platforms=android,ios --project-name game_004_2048_merge_world .
+flutter pub get
+flutter analyze --fatal-infos
+flutter test
+flutter build apk --debug
+```
 
-- Gameplay implementation: `lib/game/merge_2048.dart`
-- Unit/EditMode test source: `test/merge_2048_test.dart`
-- Interactive Flutter screen: `lib/main.dart`
- 
- 
-**Verification status:** source and test cases are committed, but compilation, test execution,
-device builds and complete gameplay verification have NOT been performed.
-Run `flutter pub get`, `flutter test`, `flutter run` in a Flutter SDK environment.
-
-## Remaining development
-
-- Game design research: supported competitor feature matrix and user experience improvements
-- Full playable levels, UI/UX polish, audio, animations, save/resume and accessibility
-- Multiple modes, progression, difficulty and content tooling
-- Device testing, CI, privacy permissions and compliant ads/in-app purchases
-- Android and iOS release builds and store verification
-
-This is an original prototype, NOT a finished production game.
-
-## Recent iteration
-- Undo the previous successful move; restores the exact prior board, score and move count.
-- Up to 20 undo snapshots, no history generated for no-op moves.
-- Added unit tests for undo restoration.
+A source commit is **not** an app-store release. Physical device testing,
+signed release builds, store assets, IAP/ads and policy verification are not
+claimed. Refer to `docs/RELEASE_READINESS.md` and release issue #1.
