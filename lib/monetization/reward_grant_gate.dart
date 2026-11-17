@@ -8,7 +8,9 @@ class RewardGrantGate {
   /// A unique opportunity ID must be created by the game for each offer.
   /// Returns false for duplicate or invalid offers.
   bool offer(String opportunityId) {
-    if (opportunityId.trim().isEmpty ||
+    // Normalize identifiers so whitespace variants cannot bypass replay checks.
+    opportunityId = opportunityId.trim();
+    if (opportunityId.isEmpty ||
         _granted.contains(opportunityId) ||
         _pending.contains(opportunityId)) {
       return false;
@@ -20,14 +22,15 @@ class RewardGrantGate {
   /// Invoke only after trusted verification of the completed rewarded ad.
   /// The caller must persist grants for durable exactly-once semantics.
   bool confirmVerified(String opportunityId, {required bool verified}) {
+    opportunityId = opportunityId.trim();
     if (!verified || !_pending.remove(opportunityId)) return false;
     return _granted.add(opportunityId);
   }
 
   /// A failed, skipped or unavailable ad never blocks normal gameplay.
-  void cancel(String opportunityId) => _pending.remove(opportunityId);
+  void cancel(String opportunityId) => _pending.remove(opportunityId.trim());
 
-  bool wasGranted(String opportunityId) => _granted.contains(opportunityId);
+  bool wasGranted(String opportunityId) => _granted.contains(opportunityId.trim());
 }
 
 /// Natural-break-only interstitial pacing; no SDK or consent implementation.
