@@ -47,6 +47,7 @@ class RewardReceiptLedger {
     if (receiptId.trim().isEmpty || !sdkCompleted || !serverVerified) {
       return false;
     }
-    return _consumedReceipts.add(receiptId);
+    // Whitespace variants must not allow a receipt to be claimed twice.
+    return _consumedReceipts.add(receiptId.trim());
   }
 }
