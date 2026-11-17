@@ -43,4 +43,12 @@ void main() {
     expect(ledger.acceptVerifiedReceipt(receiptId: 'r1', sdkCompleted: true, serverVerified: true), isTrue);
     expect(ledger.acceptVerifiedReceipt(receiptId: 'r1', sdkCompleted: true, serverVerified: true), isFalse);
   });
+
+  test('verified reward receipt rejects whitespace replay and incomplete ads', () {
+    final ledger = RewardReceiptLedger();
+    expect(ledger.acceptVerifiedReceipt(receiptId: ' receipt-1 ', sdkCompleted: false, serverVerified: true), isFalse);
+    expect(ledger.acceptVerifiedReceipt(receiptId: ' receipt-1 ', sdkCompleted: true, serverVerified: false), isFalse);
+    expect(ledger.acceptVerifiedReceipt(receiptId: ' receipt-1 ', sdkCompleted: true, serverVerified: true), isTrue);
+    expect(ledger.acceptVerifiedReceipt(receiptId: 'receipt-1', sdkCompleted: true, serverVerified: true), isFalse);
+  });
 }
