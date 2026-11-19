@@ -1,0 +1,1 @@
+2048,merge,number,puzzle,swipe,brain,offline

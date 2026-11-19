@@ -1,0 +1,1 @@
+2048,birleştir,sayı,bulmaca,kaydır,zeka,offline
